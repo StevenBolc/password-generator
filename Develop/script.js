@@ -3,64 +3,85 @@ var generateBtn =document.querySelector("#generate");
 
 
 
-function passGen() {
- var length = window.prompt ("choose a password length between 8-128")
-char = "abcdefghijklmnopqrstuvwxyz".toUpperCase
-num = "1234567890"
-spec ="!@#$%^&*()"
-passwordText = [""]
-  for (i = 0; i < length; i++){
-    passwordText += char.charAt(Math.floor(math.random() * char.length * num.length * spec.length))
-    return passwordText
+ //adds prompt functionality
+function getPrompt() {
+ 
+  // adds initial propmt
+  entry = prompt("enter a number between 8-128 characters");
+  entry = parseInt(entry);
+
+  if (entry >= 8 && entry <= 128) {
+      return entry;
+  // returns in error if credentials arent met
+  } else {
+      window.alert("Not enough/ too many numbers");
+      return getPrompt();
   }
-};
+}
 
+// adds choice functionality
+function getQuestions() {
 
+  // gives questions for user to answer 
+  var questions = {
+      lowercase: confirm("Would you like lowercase letters?"),
+      uppercase: confirm("What about uppercase letters?"),
+      numbers: confirm("Would you like numbers in your password?"),
+      specialChar: confirm("what about special characters?")
+  };
 
+  if (questions.lowercase || questions.uppercase || questions.numbers || questions.specialChar) {
+      return questions;
+ // specifies that user needs more characters
+  } else {
+      window.alert("You need a more secure password.");
+      return getQuestions();
+  }
+}
 
-// Write password to the #password input
+// generates password 
+function genPass() {
 
-function writePassword() {
-  var password =generatePassword();
-  var passwordText =document.querySelector("#password");
+  var length = getPrompt();
+  var answers = getQuestions();
+  var pass = "";
+  var passwordChars = [];
+ // adds array list of available characters
+  var characters = {
+      uppercase: ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"],
+      lowercase: ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"],
+      numbers: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"],
+      specialChar: ["!", "@", "#", "$", "%", "^", "&", "*", "?", "+", "-", "="]
+  };
+  // allows array lists to combine
+  if (answers.lowercase) {
+      passwordChars = passwordChars.concat(characters.lowercase);
+  }
+  if (answers.uppercase) {
+      passwordChars = passwordChars.concat(characters.uppercase);
+  }
+  if (answers.numbers) {
+      passwordChars = passwordChars.concat(characters.numbers);
+  }
+  if (answers.specialChar) {
+      passwordChars = passwordChars.concat(characters.specialChar);
+  }
+  // allows numbers and letters to be combined
+  for (i = 1; i <= length; i++) {
+
+    var char = Math.floor(Math.random() * passwordChars.length + 1);
+    pass += passwordChars[char];
+}
+
+  return pass;
+}
+
+function writePass() {
+
+  var password = genPass();
+  var passwordText = document.querySelector("#password");
 
   passwordText.value = password;
-  
 }
 
- 
-// Add event listener to generate button
-generateBtn.addEventListener("click", passGen);
-generateBtn.addEventListener("show", writePassword);
-
-
-
-/*// Stores user response in variable
-var tagName = prompt("Please enter an HTML Tag (ex. h1, h2, p, div):", "enter tag");
-
-if (tagName !== "h1" && tagName !== "h2" && tagName !== "p" && tagName !== "div") {
-  alert("please enter a valid tag");
-} else {
-  // Creates element based on tag entered by user
-  var tag = document.createElement(tagName);
-
-  // Adds text content to created tag
-  tag.textContent = "This was made via prompts. It's a " + tagName + ".";
-  
-  // Appends tag as child of document body
-  document.body.appendChild(tag);
-}
-
-var nextTag = confirm("Would you like to add another tag?");
-
-if (nextTag === true) {
-  var secondTagName = prompt("Please enter another  HTML Tag (ex. h1, h2, p, div):", "enter tag here");
-  if(secondTagName !== "h1" && secondTagName !== "h2" && secondTagName !== "p" && secondTagName !== "div") {
-    alert("please enter a valid tag");
-  } else {
-    var secondTag = document.createElement(secondTagName);
-    secondTag.textContent = "This is our second tag via prompts, it's a " + secondTagName + ".";
-    document.body.appendChild(secondTag);
-  }
-}*/
-
+generateBtn.addEventListener("click", writePass);
